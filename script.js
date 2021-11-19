@@ -8,8 +8,14 @@ const answer4Btn = document.querySelector('#answer4')
 const startQuizBtn = document.querySelector('#startQuiz')
 const questionEl = document.querySelector('#question')
 const resultsEl = document.querySelector('#results')
+const timerEl = document.querySelector('#timer')
+const highscoreEl = document.querySelector('#highscore')
+const addHighscoreEl = document.querySelector('#addHighscore')
+
 let quizTracker = 0
 let timer = 75
+// let points = timer
+let highscore = JSON.parse(localStorage.getItem('scores')) || []
 
 const quizQuestionsList = [
   {
@@ -39,15 +45,32 @@ const quizQuestionsList = [
   }
 ]
 
-
-startQuizBtn.addEventListener('click', startQuizGame)
-
 function startQuizGame() {
   startPageEl.classList.add('hide')
   questionPageEl.classList.remove('hide')
-
+  startTimer()
   quizTracker = 0
   showQuestion(quizTracker)
+}
+
+function startTimer() {
+  let timerInterval = setInterval(() => {
+    timer--
+    timerEl.textContent = "Timer: " + timer
+    if (timer <= 0 || quizTracker == quizQuestionsList.length) {
+      clearInterval(timerInterval)
+     showGameOver()
+    } else {
+      showQuestion(quizTracker)
+    }
+  }, 1000);
+}
+
+function showGameOver() {
+  questionPageEl.classList.add('hide')
+  highscoreEl.classList.remove('hide')
+
+  // addHighscoreEl.classList.remove('hide')
 }
 
 function showQuestion(question) {
@@ -57,13 +80,7 @@ function showQuestion(question) {
   answer2Btn.textContent = quizQuestionsList[question].choices[1]
   answer3Btn.textContent = quizQuestionsList[question].choices[2]
   answer4Btn.textContent = quizQuestionsList[question].choices[3]
-
 }
-
-answer1Btn.addEventListener('click', checkAnswer)
-answer2Btn.addEventListener('click', checkAnswer)
-answer3Btn.addEventListener('click', checkAnswer)
-answer4Btn.addEventListener('click', checkAnswer)
 
 function checkAnswer(event) {
   event.preventDefault()
@@ -73,71 +90,38 @@ function checkAnswer(event) {
   } else { 
     //if choice is incorrect
     resultsEl.textContent= `Incorrect.`
+    timer -= 5
   }
   quizTracker++
-
-  console.log(event)
-  // if (choices == )
 }
 
-function setNextQuestion() {
-  showQuestion
-}
+document.getElementById('submitScore').addEventListener('click', event => {
+  event.preventDefault()
+  const record = {
+    enterInitials: document.getElementById('enterInitials').value,
+    score: points
+  }
+  highscore.push(record)
+  localStorage.setItem('highscore', JSON.stringify(highscore))
+  document.getElementById('addHighscore').style.display = 'none'
+  document.getElementById('displayScore').style.display = 'block'
+  highscore = highscore.sort((a, b) => b.score - a.score)
+  highscore.forEach(score => {
+    let scoreElem = document.createElement('div')
+    scoreElem.innerHTML= `<h6>Username: ${record.enterInitials} | Score: ${points}</h6><hr>`
+    document.getElementById('displayScore').append(scoreElem)
+    console.log(score)
+    console.log(highscore)
+    console.log(timer)
+  })
+   let points = timer
+  
+  console.log(points)
+})
 
-
-// document.getElementById('startQuiz').addEventListener('click', () => {
-//   startQuizBtn.classList.add('hide')
-//   quizQuestions = quizQuestionsList[0].question 
-//   console.log(quizQuestions)
-// })
-
-// document.getElementById('question').textContent.display
-// console.log(question)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let countdown = 75;
-// let countdownTimer = setInterval( function () {
-//   document.getElementById('timer').innerHTML = countdown ;
-//   if (countdown <= 0){
-//     document.getElementById('timer').textContent = 'No more time left'
-//   } else {
-//     countdown-- || clearInterval(countdownTimer);
-//   }
-// },1000);
-
-
+document.getElementById('myScore').innerHTML = points
+startQuizBtn.addEventListener('click', startQuizGame)
+answer1Btn.addEventListener('click', checkAnswer)
+answer2Btn.addEventListener('click', checkAnswer)
+answer3Btn.addEventListener('click', checkAnswer)
+answer4Btn.addEventListener('click', checkAnswer)
