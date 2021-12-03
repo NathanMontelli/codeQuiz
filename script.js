@@ -69,6 +69,7 @@ function startTimer() {
 function showGameOver() {
   questionPageEl.classList.add('hide')
   highscoreEl.classList.remove('hide')
+  document.getElementById('myScore').innerHTML = timer
 
   // addHighscoreEl.classList.remove('hide')
 }
@@ -99,7 +100,7 @@ document.getElementById('submitScore').addEventListener('click', event => {
   event.preventDefault()
   const record = {
     enterInitials: document.getElementById('enterInitials').value,
-    score: points
+    score: timer
   }
   highscore.push(record)
   localStorage.setItem('highscore', JSON.stringify(highscore))
@@ -108,18 +109,12 @@ document.getElementById('submitScore').addEventListener('click', event => {
   highscore = highscore.sort((a, b) => b.score - a.score)
   highscore.forEach(score => {
     let scoreElem = document.createElement('div')
-    scoreElem.innerHTML= `<h6>Username: ${record.enterInitials} | Score: ${points}</h6><hr>`
+    scoreElem.innerHTML= `<h6>Username: ${record.enterInitials} | Score: ${record.score}</h6><hr>`
     document.getElementById('displayScore').append(scoreElem)
-    console.log(score)
-    console.log(highscore)
-    console.log(timer)
   })
-   let points = timer
-  
-  console.log(points)
 })
 
-document.getElementById('myScore').innerHTML = points
+
 startQuizBtn.addEventListener('click', startQuizGame)
 answer1Btn.addEventListener('click', checkAnswer)
 answer2Btn.addEventListener('click', checkAnswer)
