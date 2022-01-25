@@ -12,10 +12,11 @@ const timerEl = document.querySelector('#timer')
 const highscoreEl = document.querySelector('#highscore')
 const addHighscoreEl = document.querySelector('#addHighscore')
 
+
 let quizTracker = 0
 let timer = 75
 // let points = timer
-let highscore = JSON.parse(localStorage.getItem('scores')) || []
+// let highscore = JSON.parse(localStorage.getItem('scores')) || []
 
 const quizQuestionsList = [
   {
@@ -95,21 +96,23 @@ function checkAnswer(event) {
   }
   quizTracker++
 }
+ let highscore = JSON.parse(localStorage.getItem('scores')) || []
 
 document.getElementById('submitScore').addEventListener('click', event => {
   event.preventDefault()
+ 
   const record = {
     enterInitials: document.getElementById('enterInitials').value,
     score: timer
   }
   highscore.push(record)
-  localStorage.setItem('highscore', JSON.stringify(highscore))
+  localStorage.setItem('scores', JSON.stringify(highscore))
   document.getElementById('addHighscore').style.display = 'none'
   document.getElementById('displayScore').style.display = 'block'
   highscore = highscore.sort((a, b) => b.score - a.score)
   highscore.forEach(score => {
     let scoreElem = document.createElement('div')
-    scoreElem.innerHTML= `<h6>Username: ${record.enterInitials} | Score: ${record.score}</h6><hr>`
+    scoreElem.innerHTML= `<h6>Username: ${score.enterInitials} | Score: ${score.score}</h6><hr>`
     document.getElementById('displayScore').append(scoreElem)
   })
 })
